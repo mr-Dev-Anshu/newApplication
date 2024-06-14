@@ -164,6 +164,8 @@ const Page = () => {
         </DrawerContent>
       </Drawer>
       <div></div>
+
+      <button>click me </button>
     </div>
   );
 };

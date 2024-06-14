@@ -1,135 +1,93 @@
 "use client";
-
-import React, { useContext, useEffect, useState } from "react";
-
-import Cookies from "cookies-js";
-import { collection, getDocs, query, where } from "firebase/firestore";
-import { useRouter } from "next/navigation";
-import Swal from "sweetalert2";
-import { db } from "@/config/firebase.config";
-import { admin } from "@/context/admin";
-const page = () => {
-  const [message, setMessage] = useState();
-  const [loading, setLoading] = useState();
-  const [formData, setFromData] = useState();
-  const handleChange = (e) => {
-    setFromData({
-      ...formData,
-      [e.target.id]: e.target.value,
-    });
-    console.log(formData);
-  };
-
-  const navigate = useRouter();
-  const { setAdminData } = useContext(admin);
-  const handleSubmit = async (e) => {
+import { useState } from "react";
+import { login } from "@/action";
+import Swal  from "sweetalert2" ; 
+const Page = () => {
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  
+ const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setErrorMessage("");
 
-    try {
-      if (!formData.email.trim() || !formData.password.trim()) {
-        Swal.fire({
-          title: "Error!",
-          text: "All fields are required.",
-          icon: "error",
-        });
-        setLoading(false);
-        return;
-      }
+    Swal.fire({
+      title: "Loading...",
+      text: "Please wait while we process your request.",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
 
+    const formData = new FormData(e.target);
+    const userid = formData.get("userid");
+    const password = formData.get("password");
+    Swal.fire
+    if (
+      !userid ||
+      !password ||
+      userid.trim() === "" ||
+      password.trim() === ""
+    ) {
+      setErrorMessage("Please fill in the credentials!");
+      setLoading(false);
       Swal.fire({
-        title: "Loading...",
-        text: "Please wait while we process your request.",
-        allowOutsideClick: false,
-        didOpen: () => {
-          Swal.showLoading();
-        },
+        title: "Error!",
+        text: "All fields are required.",
+        icon: "error",
       });
-
-      const q = query(
-        collection(db, "admin"),
-        where("email", "==", formData.email)
-      );
-      const userSnap = await getDocs(q);
-
-      let user;
-      userSnap.forEach((doc) => {
-        user = doc.data();
-      });
-
-      if (!user || user.password !== formData.password) {
-        Swal.fire({
-          title: "Error!",
-          text: "Invalid Password.",
-          icon: "error",
-        });
-        setLoading(false);
-        return;
-      }
-
-      Cookies.set("email", user.email, {
-        expires: 36500,
-        path: "/",
-        secure: false,
-      });
-
+      return;
+    }
+    try {
+     
+      await login(formData);
       Swal.fire({
         title: "Good job!",
         text: "You are successfully logged in!",
         icon: "success",
       });
-
-      setAdminData(user);
-      navigate.push("/");
     } catch (error) {
-      console.log("Error during login:", error);
-      setMessage("An error occurred. Please try again.");
-    } finally {
+      console.log(error);
+      setErrorMessage(error?.message);
+      Swal.fire({
+        title: "Error!",
+        text: error?.message,
+        icon: "error",
+      });
       setLoading(false);
     }
   };
+
   return (
-    <div className="flex justify-center md:mt-36    ">
-      <div className="grid md:grid-cols-1 gap-4 w-[40%] p-4   shadow-2xl ">
-        <div className="flex flex-col space-y-1">
-          <label className="text-xl font-medium">
-            Enter User Name <span className="text-red-600">*</span>
-          </label>
-          <input
-            onChange={handleChange}
-            placeholder="Enter Name of Employee"
-            required
-            className="py-2 focus:outline-none px-4 border-2 border-gray-300 rounded-md"
-            type="text"
-            id="email"
-          />
-        </div>
-        <div className="flex flex-col space-y-1">
-          <label className="text-xl font-medium">
-            Enter Password <span className="text-red-600">*</span>
-          </label>
-          <input
-            onChange={handleChange}
-            required
-            placeholder="..........."
-            className="py-2 items-center  focus:outline-none px-4 border-2 border-gray-300 rounded-md placeholder:text-2xl"
-            id="password"
-            type="password"
-          />
-        </div>
-        <div className="flex justify-center mt-4">
-          <button
-            onClick={handleSubmit}
-            className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
-            disabled={loading}
-          >
-            {loading ? "Loading..." : "Submit"}
-          </button>
-        </div>
-        {message && <div className="text-red-600 mt-4">{message}</div>}
-      </div>
+    <div className="flex flex-col items-center justify-center mt-20  md:mt-24  ">
+      <form
+        onSubmit={handleLogin}
+        className="md:w-[40%] border border-gray-800 shadow-2xl flex justify-center flex-col items-center md:py-12 py-6 px-4 space-y-6 rounded-md"
+      >
+        <p className="text-2xl md:text-3xl   font-medium">Login Here</p>
+        <input
+          className="bg-transparent focus:outline border border-gray-600 px-6 py-2 placeholder:text-gray-500 placeholder:text-xl placeholder:font-bold rounded-md md:w-[70%]"
+          placeholder="Enter User id"
+          type="text"
+          name="userid"
+        />
+        <input
+          className="bg-transparent focus:outline border border-gray-600 px-6 py-2 placeholder:text-gray-500 placeholder:text-xl placeholder:font-bold rounded-md md:w-[70%]"
+          placeholder="Enter Password"
+          type="password"
+          name="password"
+        />
+        <button
+          className="bg-green-700 py-2 px-4 rounded-md md:w-[70%] w-[90%]"
+          type="submit"
+        >
+          {loading ? "Loading..." : "Login"}
+        </button>
+      </form>
+      {errorMessage && <div className="text-red-500 mt-4">{errorMessage}</div>}
     </div>
   );
 };
 
-export default page;
+export default Page;
