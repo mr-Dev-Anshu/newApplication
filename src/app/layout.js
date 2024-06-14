@@ -2,6 +2,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/AppComponents/Header";
 import AdminContextProvider from "@/context/admin";
+import { ChakraProvider } from "@chakra-ui/react";
 const inter = Inter({ subsets: ["latin"] });
 export const metadata = {
   title: "Create Next App",
@@ -10,14 +11,16 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <AdminContextProvider>
-          <div className="">
-            <Header />
-          </div>
-          <div className="py-24 ">{children}</div>
-        </AdminContextProvider>
-      </body>
+        <body className={inter.className}>
+      <ChakraProvider>
+          <AdminContextProvider>
+            <div className="">
+              <Header />
+            </div>
+            <div className="py-24 ">{children}</div>
+          </AdminContextProvider>
+      </ChakraProvider>
+        </body>
     </html>
   );
 }

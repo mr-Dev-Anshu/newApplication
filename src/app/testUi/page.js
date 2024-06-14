@@ -1,53 +1,36 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
+import React from "react";
 import newsImage from "@/accets/newsImage/img2.jpeg";
 import adsImage from "@/accets/ads/ads2.jpeg";
 import Image from "next/image";
 import HeaderAds from "@/components/adds/HeaderAds";
-
+import {
+  Drawer,
+  DrawerBody,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  useDisclosure,
+  Button,
+  Input,
+} from "@chakra-ui/react";
 const Page = () => {
-  const [toggle, setToggle] = useState(false);
-  const modalRef = useRef(null);
-
-  const handleToggle = () => {
-    setToggle(!toggle);
-  };
-
-  const handleClickOutside = (event) => {
-    if (modalRef.current && !modalRef.current.contains(event.target)) {
-      setToggle(false);
-    }
-  };
-
-  useEffect(() => {
-    if (toggle) {
-      document.body.style.overflow = "hidden";
-      document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.body.style.overflow = "auto";
-      document.removeEventListener("mousedown", handleClickOutside);
-    }
-    return () => {
-      document.body.style.overflow = "auto";
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [toggle]);
-
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const btnRef = React.useRef();
   return (
     <div className="flex flex-col min-h-screen ">
-      <HeaderAds />
-      <div
-        className={`flex-1 px-12 md:w-[70%] space-y-4 ${
-          toggle ? "blur-md" : ""
-        }`}
-      >
+      {/* <div className="md:block hidden "><HeaderAds /></div> */}
+
+      <div className={`flex-1 px-12 md:w-[70%] space-y-4 `}>
         <div className="md:text-4xl text-xl font-bold">
           Local Community Garden Thrives Amid Urban Development
         </div>
         <div className="md:text-xl text-gray-500">
           Looking for something specific? Use our Search News feature to find
-          articles, reports, and updates on the topics that matter most to
-          you. Simply enter your keywords and discover a wealth of information.
+          articles, reports, and updates on the topics that matter most to you.
+          Simply enter your keywords and discover a wealth of information.
         </div>
         <div className="rounded-md cursor-pointer flex justify-center">
           <Image className="rounded-lg" width={600} src={newsImage} alt="img" />
@@ -80,26 +63,107 @@ const Page = () => {
           cost-effective option for both residential and commercial use."
         </div>
       </div>
-      {toggle && (
-        <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
-          <div
-            ref={modalRef}
-            className="relative h-[500px] w-96 bg-white text-black p-4 rounded-md"
-          >
-            This is testing
-            <button onClick={handleToggle}>Close</button>
-          </div>
-        </div>
-      )}
-      <div className="flex justify-center md:mt-6 mt-4">
-        <button
-          onClick={handleToggle}
-          type="button"
-          className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm md:text-2xl px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+      <div className="flex justify-center mt-6 ">
+        <Button
+          className="w-fit"
+          ref={btnRef}
+          colorScheme="teal"
+          onClick={onOpen}
         >
-          Post a Comment
-        </button>
+          Leave Your Comment
+        </Button>
       </div>
+
+      <Drawer
+        isOpen={isOpen}
+        placement="right"
+        onClose={onClose}
+        finalFocusRef={btnRef}
+        size={"lg"}
+      >
+        <DrawerOverlay />
+        <DrawerContent>
+          <DrawerCloseButton />
+          <DrawerHeader>Comments </DrawerHeader>
+
+          <DrawerBody className="space-y-4">
+            <div className="border border-gray-300 px-4 py-2 ">
+              <div className="flex gap-4  items-center">
+                <p className="h-12 w-12 bg-orange-700/90 text-white rounded-full flex justify-center items-center  ">
+                  A
+                </p>
+                <div>
+                  <p className="text-xl font-bold ">Ashvini Kumar </p>
+                  <p>45 min Ago </p>
+                </div>
+              </div>
+              <div className="mt-4 md:text-xl font-medium md:pl-16">
+                Mujhe 15 Lakh Kab Milega Modi ji , is Bar to PM bhi ban gaye
+                Please de do .{" "}
+              </div>
+            </div>
+            <div className="border border-gray-300 px-4 py-2 ">
+              <div className="flex gap-4  items-center">
+                <p className="h-12 w-12 bg-orange-700/90 text-white rounded-full flex justify-center items-center  ">
+                  A
+                </p>
+                <div>
+                  <p className="text-xl font-bold ">Ashvini Kumar </p>
+                  <p>45 min Ago </p>
+                </div>
+              </div>
+              <div className="mt-4 md:text-xl font-medium md:pl-16">
+                Mujhe 15 Lakh Kab Milega Modi ji , is Bar to PM bhi ban gaye
+                Please de do .{" "}
+              </div>
+            </div>
+            <div className="border border-gray-300 px-4 py-2 ">
+              <div className="flex gap-4  items-center">
+                <p className="h-12 w-12 bg-orange-700/90 text-white rounded-full flex justify-center items-center  ">
+                  A
+                </p>
+                <div>
+                  <p className="text-xl font-bold ">Ashvini Kumar </p>
+                  <p>45 min Ago </p>
+                </div>
+              </div>
+              <div className="mt-4 md:text-xl font-medium md:pl-16">
+                Mujhe 15 Lakh Kab Milega Modi ji , is Bar to PM bhi ban gaye
+                Please de do .{" "}
+              </div>
+            </div>
+            <div className="border border-gray-300 px-4 py-2 ">
+              <div className="flex gap-4  items-center">
+                <p className="h-12 w-12 bg-orange-700/90 text-white rounded-full flex justify-center items-center  ">
+                  A
+                </p>
+                <div>
+                  <p className="text-xl font-bold ">Ashvini Kumar </p>
+                  <p>45 min Ago </p>
+                </div>
+              </div>
+              <div className="mt-4 md:text-xl font-medium md:pl-16">
+                Mujhe 15 Lakh Kab Milega Modi ji , is Bar to PM bhi ban gaye
+                Please de do .
+              </div>
+            </div>
+          </DrawerBody>
+
+          <DrawerFooter className="">
+            <div className="flex  w-full gap-4 md:px-14  ">
+              <Input
+                placeholder="Leave your  Comment...."
+                className="px-4 w-full  py-2 border-2 border-gray-500 rounded-md md:placeholder:text-xl "
+                type="text"
+              />
+              <button className="px-4 py-2 bg-sky-700 text-white font-medium rounded-md  ">
+                Send
+              </button>
+            </div>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
+      <div></div>
     </div>
   );
 };
