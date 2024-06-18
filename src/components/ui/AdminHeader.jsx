@@ -1,92 +1,128 @@
 "use client";
-import React from "react";
-import {
-  Drawer,
-  DrawerBody,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerOverlay,
-  DrawerContent,
-  DrawerCloseButton,
-  Button,
-  useDisclosure,
-} from "@chakra-ui/react";
-
-import { RxHamburgerMenu } from "react-icons/rx";
+import React, { useState, useRef } from "react";
+import { CiMenuFries } from "react-icons/ci";
+import { RxCross1 } from "react-icons/rx";
+import { AiOutlineUser } from "react-icons/ai";
+import { MdAddBox, MdWidgets, MdLogout } from "react-icons/md";
+import { FaHome } from "react-icons/fa";
 import Link from "next/link";
-import { IoLogoDesignernews } from "react-icons/io5";
-import { logout } from "@/action";
-const NavList = [
-  {
-    title: "Add News ",
-    link: "/admin/add_news",
-  },
-  {
-    title: "Add Ads",
-    link: "/admin/add_ads",
-  },
-  {
-    title: "Add Blogs ",
-    link: "/admin/add_news",
-  },
-  {
-    title: "Add  Employies  ",
-    link: "/admin/add_news",
-  },
-];
-const AdminHeader = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const btnRef = React.useRef();
+
+const Sidebar = () => {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
+  const sidebarRef = useRef(null);
+
+  // Function to handle logout
+  const handleLogout = async () => {
+    localStorage.removeItem("token");
+    dispatch(setToken(null));
+    dispatch(setUser(null));
+  };
+
+  // Function to toggle sidebar collapse
+  const handleToggle = () => {
+    const collapsed = !isCollapsed;
+    setIsCollapsed(collapsed);
+    localStorage.setItem("sidebarCollapsed", collapsed.toString());
+  };
+
+  // Effect to close sidebar when clicking outside
 
   return (
-    <div>
-      <div>
-        <div className="bg-gray-600 px-12 py-2  fixed top-0 right-0 left-0  ">
-          <Button className=" " ref={btnRef} onClick={onOpen}>
-            <RxHamburgerMenu />
-          </Button>
-        </div>
-        <Drawer
-          isOpen={isOpen}
-          placement="left"
-          onClose={onClose}
-          finalFocusRef={btnRef}
+    <div
+      ref={sidebarRef}
+      className={`fixed h-screen top-0 ${
+        isCollapsed ? "w-16" : "w-64"
+      } bg-[#0E2B44] transition-all duration-300`}
+    >
+      <div className="flex items-center justify-between p-4">
+        {/* Logo section */}
+        <div
+          className={`${
+            isCollapsed ? "hidden" : "block"
+          } text-white font-bold text-xl`}
         >
-          <DrawerOverlay />
-          <DrawerContent>
-            <div className="bg-black h-screen text-white ">
-              <DrawerCloseButton />
-              <DrawerHeader>All List for Admin </DrawerHeader>
-              <DrawerBody>
-                <div className="md:text-2xl text-xl ">
-                  <ul className="">
-                    {NavList.map((item) => (
-                      <Link href={item.link}>
-                        <li className="mt-4 flex gap-2 border rounded-md hover:bg-sky-600 hover:text-white  border-gray-600 px-3 py-2">
-                          <span>
-                            <IoLogoDesignernews />
-                          </span>
-                          <span>{item.title}</span>
-                        </li>
-                      </Link>
-                    ))}
-                  </ul>
-                </div>
-              </DrawerBody>
-            </div>
-            <DrawerFooter
-              onClick={async () => await logout()}
-              className="bg-black"
+          <img
+            src="https://i.ibb.co/W0v3fWm/Team-LOGO-page-0001.jpg"
+            alt=""
+            className="w-[50px] h-[50px] lg:w-12 lg:h-12 object-cover rounded-full"
+          />
+        </div>
+        {/* Toggle button */}
+        <button
+          onClick={handleToggle}
+          className="bg-transparent border-none w-8 h-8 flex justify-center items-center cursor-pointer text-white"
+        >
+          {isCollapsed ? <CiMenuFries size={22} /> : <RxCross1 size={22} />}
+        </button>
+      </div>
+
+      {/* Navigation links */}
+      <ul className="text-white list-none flex flex-col gap-2 p-4">
+        {[
+          { to: "/admin", icon: <FaHome />, label: "Home" },
+          { to: "/admin/news_list", icon: <MdAddBox />, label: "Add News " },
+          { to: "/admin/ads_list", icon: <MdWidgets />, label: "Add Ads" },
+          {
+            to: "/admin/createcategory",
+            icon: <MdAddBox />,
+            label: "Create Category",
+          },
+        ].map((item) => (
+          <Link
+            key={item.to}
+            href={item.to}
+            className={`text-white py-4 flex items-center hover:border-r-4 hover:border-white`}
+          >
+            <div className="text-2xl">{item.icon}</div>
+            <span
+              className={`ml-4 text-xl ${isCollapsed ? "hidden" : "block"}`}
             >
-              <Button className="w-full" colorScheme="red">
-                Logout
-              </Button>
-            </DrawerFooter>
-          </DrawerContent>
-        </Drawer>
+              {item.label}
+            </span>
+          </Link>
+        ))}
+      </ul>
+
+      {/* User and logout section */}
+      <div className="absolute bottom-2 left-2 right-2 overflow-hidden">
+        <div
+          className={`flex items-center justify-center w-full ${
+            isCollapsed
+              ? "w-11 h-11 rounded-full bg-slate-400 "
+              : "bg-slate-400 py-2 px-4 rounded-lg"
+          }`}
+        >
+          <div
+            className={`cursor-pointer flex items-center justify-center text-black ${
+              isCollapsed ? "w-10 h-10 rounded-full" : ""
+            }`}
+          >
+            {isCollapsed ? (
+              <AiOutlineUser size={20} />
+            ) : (
+              <span className="text-xl"></span>
+            )}
+          </div>
+        </div>
+        <button
+          onClick={handleLogout}
+          className={`bg-red-600 text-white text-xl flex items-center justify-center mt-2 ${
+            isCollapsed
+              ? "w-12 h-12 rounded-full"
+              : "py-2 px-4 w-full rounded-lg"
+          }`}
+        >
+          {isCollapsed ? (
+            <MdLogout />
+          ) : (
+            <span className="flex gap-1 items-center text-xl">
+              <MdLogout /> Logout
+            </span>
+          )}
+        </button>
       </div>
     </div>
   );
 };
-
-export default AdminHeader;
+export default Sidebar;

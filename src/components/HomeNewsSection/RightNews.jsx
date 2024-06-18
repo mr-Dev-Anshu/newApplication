@@ -19,7 +19,7 @@ const RightNews = () => {
 
             <div className="py-4 space-y-6 ">
               <div className="">
-                <iframe
+                {/* <iframe
                   width={300}
                   className="rounded-md w-[300px] md:w-[300px]"
                   src="https://www.youtube.com/embed/gPLrIJgsJlw?si=Ia1UUtAdv9QEsbSE"
@@ -28,7 +28,7 @@ const RightNews = () => {
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   referrerpolicy="strict-origin-when-cross-origin"
                   allowfullscreen
-                ></iframe>
+                ></iframe> */}
               </div>
               <div className="flex justify-center ">
               <Image src={ads1} alt="ads" />

@@ -3,23 +3,22 @@ import React from "react";
 import Head from "next/head";
 import AdminHeader from "@/components/ui/AdminHeader";
 import { getSession } from "@/action";
-import {redirect} from "next/navigation"
-const AdminLayout =  async ({ children }) => {
-
-   const session = await  getSession() ; 
-    if (!session.userid) {
-       redirect("/") ;
-    }
+import { redirect } from "next/navigation";
+const AdminLayout = async ({ children }) => {
+  const session = await getSession();
+  if (!session.userid) {
+    redirect("/");
+  }
   return (
     <>
       <Head>
         <title>Admin Dashboard</title>
       </Head>
-      <div>
-        <header className="">
+      <div className="flex">
+        <div className="md:w-[20%]">
           <AdminHeader />
-        </header>
-        <main className="px-12 py-20 ">{children}</main>
+        </div>
+        <div className=" md:px-10 md:w-[80%]   ">{children}</div>
       </div>
     </>
   );

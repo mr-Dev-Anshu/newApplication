@@ -12,7 +12,7 @@ const Header = () => {
         <Menu setActive={setActive}>
           <div className="flex gap-2 items-center ">
             <MenuItem setActive={setActive} active={active} item="Options">
-              <div className="">
+              <div className=""> 
                 <ul className="space-y-4">
                   <li className="cursor-pointer text-xl font-medium hover:bg-gray-300  p-2 rounded-md ">
                     <Link href={"/"}>Home</Link>

@@ -2,10 +2,10 @@ import { db, storage } from "@/config/firebase.config";
 import { addDoc, collection } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
-  export const uploadFiles = async (files, id) => {
+export const uploadFiles = async (files, id) => {
   const uploadPromises = [];
   const fileUrls = [];
-  
+
   for (const file of files) {
     const storageRef = ref(storage, `uploads/${file.name}`);
     const uploadTask = uploadBytes(storageRef, file);
@@ -34,7 +34,7 @@ import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
   }
 };
 
-export const uploadImage = async (file, id) => {
+export const uploadImage = async (file) => {
   if (!file) {
     throw new Error("No file provided");
   }
@@ -46,21 +46,9 @@ export const uploadImage = async (file, id) => {
     // Get the download URL
     const url = await getDownloadURL(snapshot.ref);
     console.log("File available at", url);
-    await addDoc(collection(db, "news_image_heading"), {
-      news_id: id,
-      url: url,
-      timestamp: new Date(),
-    });
+    return url ; 
   } catch (error) {
     console.error("Error uploading file:", error);
     throw error;
   }
 };
-
-
-
-
-
-
-
-
