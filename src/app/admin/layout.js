@@ -18,7 +18,7 @@ const AdminLayout = async ({ children }) => {
         <div className="md:w-[20%]">
           <AdminHeader />
         </div>
-        <div className=" md:px-10 md:w-[80%]   ">{children}</div>
+        <div className=" md:px-10 md:w-[80%]">{children}</div>
       </div>
     </>
   );

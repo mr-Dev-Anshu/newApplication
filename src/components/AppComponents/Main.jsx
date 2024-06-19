@@ -4,7 +4,7 @@ import { FaAngleDoubleDown } from "react-icons/fa";
 import HomePage from "@/components/AppComponents/Home"
 const Main = () => {
   return (
-    <div className="md:mt-4 ">
+    <div className="">
       <div className="md:w-[50%] px-12 border-b border-y-gray-400 py-2 flex  items-center md:text-2xl text-xl font-bold gap-4 ">
         <span className="text-red-500 ">
           <FaAngleDoubleDown size={25} />

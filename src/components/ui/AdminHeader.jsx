@@ -13,8 +13,10 @@ import { GiBreakingChain } from "react-icons/gi";
 import { BsCameraReelsFill } from "react-icons/bs";
 import { MdAddBox, MdWidgets, MdLogout } from "react-icons/md";
 import { FcSurvey } from "react-icons/fc";
-import { FaHome } from "react-icons/fa";
+import { FaHome, FaComments } from "react-icons/fa";
 import Link from "next/link";
+import { GrUserWorker } from "react-icons/gr";
+import { SlSocialFacebook } from "react-icons/sl";
 
 const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -112,6 +114,21 @@ const Sidebar = () => {
             to: "/admin/reels",
             icon: <BsCameraReelsFill />,
             label: "Reels",
+          },
+          {
+            to: "/admin/social",
+            icon: <SlSocialFacebook />,
+            label: "Social Media",
+          },
+          {
+            to: "/admin/repoters",
+            icon: <GrUserWorker />,
+            label: "Repoters",
+          },
+          {
+            to: "/admin/comments",
+            icon: <FaComments />,
+            label: "Comments",
           },
         ].map((item) => (
           <Link

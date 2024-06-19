@@ -4,6 +4,7 @@ import { Button, Input } from "@chakra-ui/react";
 import { addDoc, collection, getDocs } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { uploadFiles, uploadImage } from "@/controller/uploadFiles";
+import { statesAndUnionTerritories, statesWithCities } from "@/constant/newsData";
 const page = () => {
   const [toggle, setToggle] = useState();
   const [formData, setFormData] = useState();
@@ -14,7 +15,7 @@ const page = () => {
 
   const getData = async () => {
     const newsCategoryDataSnap = await getDocs(collection(db, "news_category"));
-    let data = [{newsCategory:"Select News Category"}];
+    let data = [{ newsCategory: "Select News Category" }];
 
     newsCategoryDataSnap.forEach((doc) => {
       data.push(doc.data());
@@ -95,6 +96,37 @@ const page = () => {
             <p className="md:text:xl font-bold flex  ">
               {" "}
               <span>Author's Name </span>{" "}
+              <span className="text-red-600">*</span>
+            </p>
+            <input
+              onChange={handleChange}
+              required
+              id="author"
+              placeholder="Enter Author's  Name "
+              className="border  border-gray-400 text-xl  focus:border focus:border-blue-500 focus:outline-none rounded-md px-4  py-1 w-full"
+              type="text"
+            />
+          </div>
+          <div className="">
+            <p className="md:text:xl font-bold flex  ">
+              {" "}
+              <span>State Name </span>{" "}
+              <span className="text-red-600">*</span>
+            </p>
+            <select
+              onChange={handleChange}
+              className="border  border-gray-400 text-xl  focus:border focus:border-blue-500 focus:outline-none rounded-md px-4  py-2 w-full"
+              id="category"
+            >
+              {statesWithCities?.map((item, index) => (
+                <option value={item.state}>{item.state}</option>
+              ))}
+            </select>
+          </div>
+          <div className="">
+            <p className="md:text:xl font-bold flex  ">
+              {" "}
+              <span>City Name </span>{" "}
               <span className="text-red-600">*</span>
             </p>
             <input
