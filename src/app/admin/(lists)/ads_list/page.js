@@ -57,7 +57,7 @@ const AdsPage = () => {
         <Tbody>
           {ads.map((item) => (
             <Tr key={item.id}>
-              <Td>{item.formData.ads_category}</Td>
+              <Td>{item.formData.category}</Td>
               <Td>{item.formData?.ad_title}</Td>
               <Td>{item.formData?.advertiser_name}</Td>
               <Td>{item.active ? "Active" : "Inactive"}</Td>

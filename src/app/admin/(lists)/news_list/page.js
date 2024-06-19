@@ -1,6 +1,6 @@
 "use client";
 import { db } from "@/config/firebase.config";
-import { Button, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import { Button, Table, Tbody, Td, Th, Thead, Tr, Image } from "@chakra-ui/react";
 import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 const NewsPage = () => {
   const [news, setNews] = useState([]);
   const router = useRouter();
+  
 
   const fetchNews = async () => {
     const newsSnap = await getDocs(collection(db, "news_data"));
@@ -47,6 +48,7 @@ const NewsPage = () => {
       <Table variant="simple">
         <Thead>
           <Tr>
+            <Th>Heading Image</Th>
             <Th>Category</Th>
             <Th>Title</Th>
             <Th>Author</Th>
@@ -57,11 +59,19 @@ const NewsPage = () => {
         <Tbody>
           {news.map((item) => (
             <Tr key={item.id}>
+              <Td>
+                <Image
+                  src={item.heading_image}
+                  alt={item.title}
+                  boxSize="100px"
+                  objectFit="cover"
+                />
+              </Td>
               <Td>{item.category}</Td>
               <Td>{item.title}</Td>
               <Td>{item.author}</Td>
               <Td>{item.active ? "Yes" : "No"}</Td>
-              <Td>
+              <Td className="flex justify-center items-center ">
                 <Button
                   size="sm"
                   colorScheme="blue"

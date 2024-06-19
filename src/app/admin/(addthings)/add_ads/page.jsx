@@ -2,6 +2,7 @@
 import { db } from "@/config/firebase.config";
 import { uploadFiles } from "@/controller/uploadFiles";
 import { Button, Input } from "@chakra-ui/react";
+import clsx from "clsx";
 import { addDoc, collection, getDocs } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 
@@ -11,6 +12,7 @@ const page = () => {
   const [files, setFiles] = useState();
   const [message, setMessage] = useState();
   const [adsCategory, setAdsCategory] = useState();
+  const [loading , setLoading ] = useState(false) ; 
 
   const handleFiles = (e) => {
     setFiles(e.target.files);
@@ -45,6 +47,7 @@ const page = () => {
   }, []);
   const handleSubmit = async (e) => {
     // console.lot("chala jiii ")
+    setLoading(true)
     const requiredFields = [
       "ad_title",
       "category",
@@ -56,24 +59,27 @@ const page = () => {
       "ad_discription",
     ];
 
-    if (
-      requiredFields.map((item) => {
-        formData?.item === null;
-        return true;
-      })
-    ) {
-      setMessage("Please fill the all filed ");
-      return;
-    }
+    // if (
+    //   requiredFields.map((item) => {
+    //     formData?.item === null;
+      
+    //     return true;
+    //   })
+    // ) {
+    //   setMessage("Please fill the all filed ");
+    //   console.log('missing')
+    //   setLoading(false)
+    //   return;
+    // }
 
-    console.log("chala");
-    return;
+   
     e.preventDefault();
     setMessage(null);
 
     if (!files) {
       console.log("file is not there ");
       setMessage("Please select the Images ");
+      setLoading(false)
       return;
     }
 
@@ -89,7 +95,11 @@ const page = () => {
     console.log("files has been uploaded dude ");
     try {
       setMessage(null);
-    } catch (error) {}
+      setLoading(false)
+    } catch (error) {
+      console.log(error)
+      setLoading(false)
+    }
   };
   return (
     <div className="space-y-6">
@@ -121,7 +131,7 @@ const page = () => {
             id="category"
           >
             {adsCategory?.map((item, index) => (
-              <option value={item}>{item.adsCategory}</option>
+              <option value={item.adsCategory}>{item.adsCategory}</option>
             ))}
           </select>
         </div>
@@ -229,6 +239,7 @@ const page = () => {
           className="w-[50%]"
           colorScheme="teal"
           variant="solid"
+          isLoading={loading}
         >
           Submit
         </Button>
