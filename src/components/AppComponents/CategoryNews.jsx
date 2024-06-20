@@ -35,7 +35,6 @@ const CategoryNews = ({ category }) => {
       setNewsData(data);
       setLoading(false);
     };
-
     fetchNewsData();
   }, [category]);
 
@@ -58,7 +57,7 @@ const CategoryNews = ({ category }) => {
   };
 
   return (
-    <VStack spacing={6} p={4} align="stretch">
+    <VStack spacing={6} p={2} align="stretch">
       {currentItems.length === 0 ? (
         <Text>No news available for this category.</Text>
       ) : (

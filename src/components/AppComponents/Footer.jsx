@@ -28,8 +28,8 @@ const Footer = () => {
           <Text>&copy; 2024 Company Name. All rights reserved.</Text>
           <Text>
             Designed by{' '}
-            <Link href="https://yourwebsite.com" isExternal>
-              Your Name
+            <Link href="https://www.linkedin.com/in/anshu-pandey-b08860258/" isExternal>
+              Anshu Pandey 
             </Link>
           </Text>
         </Flex>
