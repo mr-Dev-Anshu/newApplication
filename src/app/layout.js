@@ -4,6 +4,7 @@ import Header from "@/components/AppComponents/Header";
 import AdminContextProvider from "@/context/admin";
 import { ChakraProvider } from "@chakra-ui/react";
 import { getSession } from "@/action";
+import Footer from "@/components/AppComponents/Footer";
 const inter = Inter({ subsets: ["latin"] });
 export const metadata = {
   title: "Create Next App",
@@ -21,6 +22,7 @@ export default async function RootLayout({ children }) {
             <div className={`${isAdmin ? "" : "md:px-12"} py-20`}>
               {children}
             </div>
+            <div className="">{!isAdmin ? <Footer /> : null}</div>
           </AdminContextProvider>
         </ChakraProvider>
       </body>

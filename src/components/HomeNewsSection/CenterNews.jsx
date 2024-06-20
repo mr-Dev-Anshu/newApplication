@@ -29,10 +29,9 @@ const CenterNews = () => {
     const getData = async () => {
       try {
         const allData = [];
-        const dataSnap = await getDocs(collection(db, "news_data")); // Adjust collection name
-    
+        const dataSnap = await getDocs(collection(db, "breaking_news")); // Adjust collection name
           dataSnap.forEach(doc=> {
-              allData.push(doc.data().formData) ; 
+              allData.push(doc.data()) ; 
           })
         console.log(allData); // Log allData to verify all entries are present
         setData(allData);

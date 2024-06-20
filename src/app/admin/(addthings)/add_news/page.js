@@ -4,7 +4,10 @@ import { Button, Input } from "@chakra-ui/react";
 import { addDoc, collection, getDocs } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { uploadFiles, uploadImage } from "@/controller/uploadFiles";
-import { statesAndUnionTerritories, statesWithCities } from "@/constant/newsData";
+import {
+  statesAndUnionTerritories,
+  statesWithCities,
+} from "@/constant/newsData";
 const page = () => {
   const [toggle, setToggle] = useState();
   const [formData, setFormData] = useState();
@@ -66,7 +69,7 @@ const page = () => {
     });
     console.log(docRef.id);
     const id = docRef.id;
-    await uploadFiles(files);
+    await uploadFiles(files , id);
     console.log("Sab thik hai bro :::::) ");
     handelToggle();
   };
@@ -110,8 +113,7 @@ const page = () => {
           <div className="">
             <p className="md:text:xl font-bold flex  ">
               {" "}
-              <span>State Name </span>{" "}
-              <span className="text-red-600">*</span>
+              <span>State Name </span> <span className="text-red-600">*</span>
             </p>
             <select
               onChange={handleChange}
@@ -126,8 +128,7 @@ const page = () => {
           <div className="">
             <p className="md:text:xl font-bold flex  ">
               {" "}
-              <span>City Name </span>{" "}
-              <span className="text-red-600">*</span>
+              <span>City Name </span> <span className="text-red-600">*</span>
             </p>
             <input
               onChange={handleChange}
@@ -151,7 +152,7 @@ const page = () => {
               id="category"
             >
               {newsCategory?.map((item, index) => (
-                <option value={item}>{item.newsCategory}</option>
+                <option value={item.newsCategory}>{item.newsCategory}</option>
               ))}
             </select>
           </div>

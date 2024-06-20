@@ -8,7 +8,6 @@ const AddSurvey = () => {
   const [language, setLanguage] = useState("");
   const [question, setQuestion] = useState("");
   const [options, setOptions] = useState([""]);
-
   const handleAddOption = () => {
     setOptions([...options, ""]);
   };
@@ -26,7 +25,6 @@ const AddSurvey = () => {
       question,
       options,
     };
-
     try {
       await addDoc(collection(db, "surveys"), surveyData);
       alert("Survey added successfully!");

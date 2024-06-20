@@ -1,0 +1,208 @@
+'use client'
+import React, { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import {
+  Box,
+  Button,
+  Drawer,
+  DrawerBody,
+  DrawerCloseButton,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
+  Image,
+  Input,
+  Spinner,
+  Text,
+  useDisclosure,
+  VStack,
+} from "@chakra-ui/react";
+import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
+import { db } from "@/config/firebase.config";
+
+const NewComponent = () => {
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const btnRef = React.useRef();
+  const [loading, setLoading] = useState(true);
+  const [newsData, setNewsData] = useState(null);
+  const [error, setError] = useState(null);
+  const [newsImages, setNewsImages] = useState([]);
+
+  useEffect(() => {
+    const fetchNewsData = async () => {
+      try {
+        setLoading(true);
+        const docRef = doc(db, "news_data", id);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          const newsData = { id: docSnap.id, ...docSnap.data().formData };
+          setNewsData(newsData);
+
+          // Fetch associated images
+          const q = query(
+            collection(db, "news_images"),
+            where("news_id", "==", id)
+          );
+          console.log(q) ; 
+          const imageSnap = await getDocs(q);
+          console.log(imageSnap.empty) ; 
+          const images = imageSnap.docs.map((doc) => ({
+            id: doc.id,
+            url: doc.data().url,
+          }));
+          console.log(images)
+          setNewsImages(images);
+        } else {
+          setError("No such document exists!");
+        }
+      } catch (error) {
+        console.error("Error fetching document: ", error);
+        setError("Error fetching document");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id) {
+      fetchNewsData();
+    }
+  }, [id]);
+
+  if (loading) {
+    return (
+      <VStack justifyContent="center" alignItems="center" height="100vh">
+        <Spinner size="xl" />
+      </VStack>
+    );
+  }
+
+  if (error) {
+    return (
+      <VStack justifyContent="center" alignItems="center" height="100vh">
+        <Text>Error: {error}</Text>
+      </VStack>
+    );
+  }
+
+  if (!newsData) {
+    return (
+      <VStack justifyContent="center" alignItems="center" height="100vh">
+        <Text>No news data found for this ID.</Text>
+      </VStack>
+    );
+  }
+
+  return (
+    <div className="flex flex-col min-h-screen md:mt-10">
+      <div className={`flex-1 px-12 md:w-[70%] space-y-4 `}>
+        <Text fontSize="4xl" fontWeight="bold" mb={4}>
+          {newsData.title}
+        </Text>
+        <Text fontSize="xl" color="gray.500" mb={4}>
+          Looking for something specific? Use our Search News feature to find
+          articles, reports, and updates on the topics that matter most to
+          you. Simply enter your keywords and discover a wealth of
+          information.
+        </Text>
+        {newsImages.length > 0 && (
+          <Box className="rounded-md cursor-pointer flex justify-center">
+            <img
+              className="rounded-lg"
+              src={newsImages[0].url} 
+              alt={newsData.title}
+              width={600}
+              height={400}
+              objectFit="cover"
+            />
+          </Box>
+        )}
+        <Text fontSize="xl" color="gray.500" mb={4}>
+          Read More About It
+        </Text>
+        <Text fontSize="xl">{newsData.news_body}</Text>
+        <Text fontSize="xl" color="gray.500" mb={4}>
+          {newsData.author} - {newsData.publish_date}
+        </Text>
+      </div>
+      <div className="flex justify-center mt-6">
+        <Button className="w-fit" ref={btnRef} colorScheme="teal" onClick={onOpen}>
+          Leave Your Comment
+        </Button>
+      </div>
+
+      <Drawer
+        isOpen={isOpen}
+        placement="right"
+        onClose={onClose}
+        finalFocusRef={btnRef}
+        size={"lg"}
+      >
+        <DrawerOverlay />
+        <DrawerContent>
+          <DrawerCloseButton />
+          <DrawerHeader>Comments</DrawerHeader>
+
+          <DrawerBody className="space-y-4">
+            <div className="border border-gray-300 px-4 py-2">
+              <div className="flex gap-4 items-center">
+                <p className="h-12 w-12 bg-orange-700/90 text-white rounded-full flex justify-center items-center">
+                  A
+                </p>
+                <div>
+                  <p className="text-xl font-bold">Ashvini Kumar</p>
+                  <p>45 min Ago</p>
+                </div>
+              </div>
+              <div className="mt-4 md:text-xl font-medium md:pl-16">
+                Mujhe 15 Lakh Kab Milega Modi ji, is Bar to PM bhi ban gaye
+                Please de do.
+              </div>
+            </div>
+          </DrawerBody>
+
+          <DrawerFooter>
+            <div className="flex w-full gap-4 px-4">
+              <Input
+                placeholder="Leave your comment...."
+                className="px-4 w-full py-2 border-2 border-gray-500 rounded-md"
+                type="text"
+              />
+              <Button
+                px={4}
+                py={2}
+                bg="sky.700"
+                color="white"
+                fontWeight="medium"
+                rounded="md"
+              >
+                Send
+              </Button>
+            </div>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
+    </div>
+  );
+};
+
+const Page = () => {
+  const [showComponent, setShowComponent] = useState(false);
+
+  useEffect(() => {
+    setShowComponent(true);
+  }, []);
+
+  return (
+    <div>
+      {showComponent && (
+        <NewComponent />
+      )}
+    </div>
+  );
+};
+
+export default Page;
