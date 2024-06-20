@@ -1,4 +1,3 @@
-// components/CategoryNews.js
 "use client";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
@@ -11,11 +10,15 @@ import {
   VStack,
   SimpleGrid,
   Spinner,
+  Button,
+  HStack,
 } from "@chakra-ui/react";
 
 const CategoryNews = ({ category }) => {
   const [newsData, setNewsData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 4;
 
   useEffect(() => {
     const fetchNewsData = async () => {
@@ -44,13 +47,23 @@ const CategoryNews = ({ category }) => {
     );
   }
 
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = newsData.slice(indexOfFirstItem, indexOfLastItem);
+
+  const totalPages = Math.ceil(newsData.length / itemsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
   return (
     <VStack spacing={6} p={4} align="stretch">
-      {newsData.length === 0 ? (
+      {currentItems.length === 0 ? (
         <Text>No news available for this category.</Text>
       ) : (
         <SimpleGrid columns={[1, 2, 3, 4]} spacing={6} w="full">
-          {newsData.map((news) => (
+          {currentItems.map((news) => (
             <Box
               key={news.id}
               p={3}
@@ -83,6 +96,17 @@ const CategoryNews = ({ category }) => {
           ))}
         </SimpleGrid>
       )}
+      <HStack spacing={2} mt={4} justify="center">
+        {Array.from({ length: totalPages }, (_, index) => (
+          <Button
+            key={index + 1}
+            onClick={() => handlePageChange(index + 1)}
+            isDisabled={currentPage === index + 1}
+          >
+            {index + 1}
+          </Button>
+        ))}
+      </HStack>
     </VStack>
   );
 };
