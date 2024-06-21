@@ -1,21 +1,21 @@
 "use client";
 import { db } from "@/config/firebase.config";
-import { uploadFiles } from "@/controller/uploadFiles";
+import { uploadFiles, uploadImage } from "@/controller/uploadFiles";
 import { Button, Input } from "@chakra-ui/react";
 import clsx from "clsx";
-import { addDoc, collection, getDocs } from "firebase/firestore";
+import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 
 const page = () => {
   const [formData, setFormData] = useState();
   const [toggle, setToggle] = useState();
-  const [files, setFiles] = useState();
+  const [file, setFile] = useState();
   const [message, setMessage] = useState();
   const [adsCategory, setAdsCategory] = useState();
   const [loading , setLoading ] = useState(false) ; 
 
-  const handleFiles = (e) => {
-    setFiles(e.target.files);
+  const handleFile = (e) => {
+    setFile(e.target.files[0]);
   };
 
   const handleChange = (e) => {
@@ -23,13 +23,10 @@ const page = () => {
       ...formData,
       [e.target.id]: e.target.value,
     });
-
     console.log(formData);
   };
 
-  const handleToggle = () => {
-    setToggle(!toggle);
-  };
+ 
 
   const getData = async () => {
     const newsCategoryDataSnap = await getDocs(collection(db, "ads_category"));
@@ -76,22 +73,33 @@ const page = () => {
     e.preventDefault();
     setMessage(null);
 
-    if (!files) {
+    if (!file) {
       console.log("file is not there ");
       setMessage("Please select the Images ");
       setLoading(false)
       return;
     }
+   
+     if(formData?.category) {
+      const q  = query(collection(db,"ads_data") , where("category",'==' , formData?.category)) ; 
+      const dataSnap = await getDocs(q) ; 
+      if(!dataSnap.empty) {
+         setMessage("Already Added , Please Delete first")
+         setLoading(false) ; 
+         return ; 
+      }
+     }
+    
 
     // return
-
+     const url = await uploadImage(file) ; 
+      
+     formData.url = url ; 
     e.preventDefault();
     const docRef = await addDoc(collection(db, "ads_data"), {
-      formData,
+      ...formData
     });
-    console.log(docRef.id);
-    const id = docRef.id;
-    await uploadFiles(files, id);
+    
     console.log("files has been uploaded dude ");
     try {
       setMessage(null);
@@ -131,7 +139,7 @@ const page = () => {
             id="category"
           >
             {adsCategory?.map((item, index) => (
-              <option value={item.adsCategory}>{item.adsCategory}</option>
+              <option value={item?.adsCategory}>{item?.adsCategory}</option>
             ))}
           </select>
         </div>
@@ -209,12 +217,12 @@ const page = () => {
             <span> Ad Images </span> <span className="text-red-600">*</span>
           </p>
           <input
-            onChange={handleFiles}
+            onChange={handleFile}
             id="files"
             placeholder="Enter Category"
             className="border lowercase border-gray-400 text-xl focus:border focus:border-blue-500 focus:outline-none rounded-md px-4 py-1 w-full"
             type="file"
-            multiple
+            
           />
         </div>
 

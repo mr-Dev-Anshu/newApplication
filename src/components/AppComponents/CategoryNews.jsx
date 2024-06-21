@@ -55,7 +55,6 @@ const CategoryNews = ({ category }) => {
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
-
   return (
     <VStack spacing={6} p={2} align="stretch">
       {currentItems.length === 0 ? (

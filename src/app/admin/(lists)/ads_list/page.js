@@ -57,9 +57,9 @@ const AdsPage = () => {
         <Tbody>
           {ads.map((item) => (
             <Tr key={item.id}>
-              <Td>{item.formData.category}</Td>
-              <Td>{item.formData?.ad_title}</Td>
-              <Td>{item.formData?.advertiser_name}</Td>
+              <Td>{item.category}</Td>
+              <Td>{item?.ad_title}</Td>
+              <Td>{item?.advertiser_name}</Td>
               <Td>{item.active ? "Active" : "Inactive"}</Td>
               <Td>
                 <Button

@@ -14,6 +14,7 @@ const DynamicCategoryContainer = () => {
     const fetchCategories = async () => {
       try {
         const querySnapshot = await getDocs(collection(db, "news_category"));
+         
         const fetchedCategories = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           category: doc.data().newsCategory,
@@ -52,7 +53,7 @@ const DynamicCategory = ({ category }) => {
         <span>{category} News</span>
       </div>
       <CategoryNews category={category} />
-      <AdSection />
+      <AdSection category={category} />
     </div>
   );
 };
