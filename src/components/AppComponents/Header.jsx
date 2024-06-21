@@ -62,6 +62,12 @@ const Header = () => {
                       Login
                     </li>
                   </Link>
+                  <Link href={"/servey"}>
+                    {" "}
+                    <li className="cursor-pointer text-xl font-medium hover:text-red-500   p-2 ">
+                      Servey 
+                    </li>
+                  </Link>
                   <li className="cursor-pointer text-xl font-medium  p-2 hover:text-red-500 ">
                     Privecy and Policy
                   </li>
