@@ -12,7 +12,7 @@ const Header = () => {
         <Menu setActive={setActive}>
           <div className="flex gap-2 items-center ">
             <MenuItem setActive={setActive} active={active} item="Options">
-              <div className=""> 
+              <div className="">
                 <ul className="space-y-4">
                   <li className="cursor-pointer text-xl font-medium hover:bg-gray-300  p-2 rounded-md ">
                     <Link href={"/"}>Home</Link>
@@ -59,13 +59,19 @@ const Header = () => {
                   <Link href={"/login"}>
                     {" "}
                     <li className="cursor-pointer text-xl font-medium hover:text-red-500   p-2 ">
-                      Login
+                      Login As Admin
+                    </li>
+                  </Link>
+                  <Link href={"/userlogin"}>
+                    {" "}
+                    <li className="cursor-pointer text-xl font-medium hover:text-red-500   p-2 ">
+                      Login As User 
                     </li>
                   </Link>
                   <Link href={"/servey"}>
                     {" "}
                     <li className="cursor-pointer text-xl font-medium hover:text-red-500   p-2 ">
-                      Servey 
+                      Servey
                     </li>
                   </Link>
                   <li className="cursor-pointer text-xl font-medium  p-2 hover:text-red-500 ">
