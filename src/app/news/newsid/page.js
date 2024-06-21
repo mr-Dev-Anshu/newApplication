@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import {
@@ -18,8 +18,18 @@ import {
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
-import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 import { db } from "@/config/firebase.config";
+import { getSession } from "@/action";
+import Link from "next/link";
 
 const NewComponent = () => {
   const searchParams = useSearchParams();
@@ -30,6 +40,46 @@ const NewComponent = () => {
   const [newsData, setNewsData] = useState(null);
   const [error, setError] = useState(null);
   const [newsImages, setNewsImages] = useState([]);
+  const [comment, setComment] = useState("");
+  const [userEmail, setUserEmail] = useState(null);
+  const [comments, setComments] = useState(null);
+  const [cLoading, setCloading] = useState(false);
+  useEffect(() => {
+    const fetchSession = async () => {
+      try {
+        const session = await getSession();
+        if (session) {
+          const email = session.email;
+          setUserEmail(email);
+          console.log("this is from news  ", email);
+        }
+      } catch (error) {
+        console.error("Error fetching session:", error);
+      }
+    };
+
+    fetchSession();
+  }, []);
+
+
+  const fetchCommentData = async () => {
+    try {
+      const q = query(collection(db, "Comments"), where("newsId", "==", id));
+
+      const dataSnap = await getDocs(q);
+
+      const commentsData = [];
+
+      dataSnap.forEach((doc) => {
+        commentsData.push({ id: doc.id, ...doc.data() });
+      });
+
+      console.log("this is comments data ", commentsData);
+      setComments(commentsData);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     const fetchNewsData = async () => {
@@ -47,14 +97,14 @@ const NewComponent = () => {
             collection(db, "news_images"),
             where("news_id", "==", id)
           );
-          console.log(q) ; 
+          console.log(q);
           const imageSnap = await getDocs(q);
-          console.log(imageSnap.empty) ; 
+          console.log(imageSnap.empty);
           const images = imageSnap.docs.map((doc) => ({
             id: doc.id,
             url: doc.data().url,
           }));
-          console.log(images)
+          console.log(images);
           setNewsImages(images);
         } else {
           setError("No such document exists!");
@@ -67,10 +117,27 @@ const NewComponent = () => {
       }
     };
 
+   
     if (id) {
       fetchNewsData();
+      fetchCommentData();
     }
   }, [id]);
+
+  const handleComment = async () => {
+    setCloading(true);
+    const docRef = collection(db, "Comments");
+    await addDoc(docRef, {
+      comment,
+      newsId: id,
+      email: userEmail,
+      like: 0,
+      dislike: 0,
+    });
+    setComment('') ; 
+    setCloading(false);
+     fetchCommentData() ; 
+  }; 
 
   if (loading) {
     return (
@@ -104,15 +171,14 @@ const NewComponent = () => {
         </Text>
         <Text fontSize="xl" color="gray.500" mb={4}>
           Looking for something specific? Use our Search News feature to find
-          articles, reports, and updates on the topics that matter most to
-          you. Simply enter your keywords and discover a wealth of
-          information.
+          articles, reports, and updates on the topics that matter most to you.
+          Simply enter your keywords and discover a wealth of information.
         </Text>
         {newsImages.length > 0 && (
           <Box className="rounded-md cursor-pointer flex justify-center">
             <img
               className="rounded-lg"
-              src={newsImages[0].url} 
+              src={newsImages[0].url}
               alt={newsData.title}
               width={600}
               height={400}
@@ -129,7 +195,12 @@ const NewComponent = () => {
         </Text>
       </div>
       <div className="flex justify-center mt-6">
-        <Button className="w-fit" ref={btnRef} colorScheme="teal" onClick={onOpen}>
+        <Button
+          className="w-fit"
+          ref={btnRef}
+          colorScheme="teal"
+          onClick={onOpen}
+        >
           Leave Your Comment
         </Button>
       </div>
@@ -143,46 +214,58 @@ const NewComponent = () => {
       >
         <DrawerOverlay />
         <DrawerContent>
-          <DrawerCloseButton />
-          <DrawerHeader>Comments</DrawerHeader>
+          {userEmail ? (
+            <>
+              <DrawerCloseButton />
+              <DrawerHeader>Comments</DrawerHeader>
 
-          <DrawerBody className="space-y-4">
-            <div className="border border-gray-300 px-4 py-2">
-              <div className="flex gap-4 items-center">
-                <p className="h-12 w-12 bg-orange-700/90 text-white rounded-full flex justify-center items-center">
-                  A
-                </p>
-                <div>
-                  <p className="text-xl font-bold">Ashvini Kumar</p>
-                  <p>45 min Ago</p>
+              <DrawerBody className="space-y-4">
+                {comments.map((item) => (
+                  <div className="border border-gray-300 px-4 py-2">
+                    <div className="flex gap-4 items-center">
+                      <p className="h-12 w-12 bg-orange-700/90 text-white rounded-full flex justify-center items-center">
+                        .
+                      </p>
+                      <div>
+                        <p className="text-xl font-bold">{item.email}</p>
+                        <p>45 min Ago</p>
+                      </div>
+                    </div>
+                    <div className="mt-4 md:text-xl font-medium md:pl-16">
+                      {item.comment}
+                    </div>
+                  </div>
+                ))}
+              </DrawerBody>
+
+              <DrawerFooter>
+                <div className="flex w-full gap-4 px-4">
+                  <Input
+                  value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                    placeholder="Leave your comment...."
+                    className="px-4 w-full py-2 border-2 border-gray-500 rounded-md"
+                    type="text"
+                  />
+                  <Button
+                    colorScheme={"teal"}
+                    isLoading={cLoading}
+                    onClick={handleComment}
+                    className="bg-sky-700 text-white p-2 rounded-md"
+                  >
+                    Send
+                  </Button>
                 </div>
-              </div>
-              <div className="mt-4 md:text-xl font-medium md:pl-16">
-                Mujhe 15 Lakh Kab Milega Modi ji, is Bar to PM bhi ban gaye
-                Please de do.
-              </div>
-            </div>
-          </DrawerBody>
-
-          <DrawerFooter>
-            <div className="flex w-full gap-4 px-4">
-              <Input
-                placeholder="Leave your comment...."
-                className="px-4 w-full py-2 border-2 border-gray-500 rounded-md"
-                type="text"
-              />
-              <Button
-                px={4}
-                py={2}
-                bg="sky.700"
-                color="white"
-                fontWeight="medium"
-                rounded="md"
-              >
-                Send
-              </Button>
-            </div>
-          </DrawerFooter>
+              </DrawerFooter>
+            </>
+          ) : (
+            <p className=" flex justify-center  items-center h-screen text-red-600 font-bold text-2xl ">
+              Please Login first
+              <button className="text-xl font-bold bg-gray-800 text-white py-2 px-3 rounded-md mx-2">
+                <Link href={"/userlogin"}> Login </Link>
+              </button>
+            </p>
+          )}
         </DrawerContent>
       </Drawer>
     </div>
@@ -196,13 +279,7 @@ const Page = () => {
     setShowComponent(true);
   }, []);
 
-  return (
-    <div>
-      {showComponent && (
-        <NewComponent />
-      )}
-    </div>
-  );
+  return <div>{showComponent && <NewComponent />}</div>;
 };
 
 export default Page;

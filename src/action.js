@@ -65,7 +65,7 @@ export const login = async (formData) => {
     if (password !== user.password) {
       throw new Error("Incorrect Password ! Please try again ");
     }
-    session.userid = user.userid;
+    session.email = user.email;
     console.log(session);
     await session.save();
     redirect("/");

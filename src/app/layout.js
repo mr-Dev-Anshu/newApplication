@@ -1,7 +1,6 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/AppComponents/Header";
-import AdminContextProvider from "@/context/admin";
 import { ChakraProvider } from "@chakra-ui/react";
 import { getSession } from "@/action";
 import Footer from "@/components/AppComponents/Footer";
@@ -14,18 +13,19 @@ export default async function RootLayout({ children }) {
   const session = await getSession();
   const isAdmin = session.userid;
   const isUser = session.email ; 
-  console.log(isUser) ; 
+   
+  console.log( "this is from layout" ,  isUser) ; 
   return (
     <html lang="en">
       <body className={inter.className}>
         <ChakraProvider>
-          <AdminContextProvider>
+          
             <div className="">{!isAdmin ? <Header /> : null}</div>
             <div className={`${isAdmin ? "" : "md:px-12"} py-20`}>
               {children}
             </div>
             <div className="">{!isAdmin ? <Footer /> : null}</div>
-          </AdminContextProvider>
+          
         </ChakraProvider>
       </body>
     </html>
