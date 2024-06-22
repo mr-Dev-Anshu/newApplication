@@ -61,7 +61,6 @@ const NewComponent = () => {
     fetchSession();
   }, []);
 
-
   const fetchCommentData = async () => {
     try {
       const q = query(collection(db, "Comments"), where("newsId", "==", id));
@@ -93,18 +92,21 @@ const NewComponent = () => {
           setNewsData(newsData);
 
           // Fetch associated images
+
           const q = query(
             collection(db, "news_images"),
             where("news_id", "==", id)
           );
+
+          
           console.log(q);
           const imageSnap = await getDocs(q);
           console.log(imageSnap.empty);
           const images = imageSnap.docs.map((doc) => ({
-            id: doc.id,
+            id: doc.id, 
             url: doc.data().url,
           }));
-          console.log(images);
+          console.log( "this is Image -> " ,  images);
           setNewsImages(images);
         } else {
           setError("No such document exists!");
@@ -117,7 +119,6 @@ const NewComponent = () => {
       }
     };
 
-   
     if (id) {
       fetchNewsData();
       fetchCommentData();
@@ -134,10 +135,10 @@ const NewComponent = () => {
       like: 0,
       dislike: 0,
     });
-    setComment('') ; 
+    setComment("");
     setCloading(false);
-     fetchCommentData() ; 
-  }; 
+    fetchCommentData();
+  };
 
   if (loading) {
     return (
@@ -164,16 +165,14 @@ const NewComponent = () => {
   }
 
   return (
-    <div className="flex flex-col min-h-screen md:mt-10">
-      <div className={`flex-1 px-12 md:w-[70%] space-y-4 `}>
-        <Text fontSize="4xl" fontWeight="bold" mb={4}>
+    <div className="flex flex-col md:mt-12 mt-6 ]">
+      <div className="flex-1 px-4 md:px-12 md:w-[60%] w-[90%] border border-gray-200 space-y-4 mx-auto">
+        <p className="md:text-4xl text-2xl mb-4 font-bold ">
           {newsData.title}
-        </Text>
-        <Text fontSize="xl" color="gray.500" mb={4}>
-          Looking for something specific? Use our Search News feature to find
-          articles, reports, and updates on the topics that matter most to you.
-          Simply enter your keywords and discover a wealth of information.
-        </Text>
+        </p>
+        <p className="font-bold  md:text-xl ">
+          {newsData.subtitle}
+        </p>
         {newsImages.length > 0 && (
           <Box className="rounded-md cursor-pointer flex justify-center">
             <img
@@ -182,7 +181,7 @@ const NewComponent = () => {
               alt={newsData.title}
               width={600}
               height={400}
-              objectFit="cover"
+              style={{ objectFit: "cover" }}
             />
           </Box>
         )}
@@ -220,8 +219,8 @@ const NewComponent = () => {
               <DrawerHeader>Comments</DrawerHeader>
 
               <DrawerBody className="space-y-4">
-                {comments.map((item) => (
-                  <div className="border border-gray-300 px-4 py-2">
+                {comments.map((item, index) => (
+                  <div key={index} className="border border-gray-300 px-4 py-2">
                     <div className="flex gap-4 items-center">
                       <p className="h-12 w-12 bg-orange-700/90 text-white rounded-full flex justify-center items-center">
                         .
@@ -241,7 +240,7 @@ const NewComponent = () => {
               <DrawerFooter>
                 <div className="flex w-full gap-4 px-4">
                   <Input
-                  value={comment}
+                    value={comment}
                     onChange={(e) => setComment(e.target.value)}
                     placeholder="Leave your comment...."
                     className="px-4 w-full py-2 border-2 border-gray-500 rounded-md"
@@ -259,10 +258,10 @@ const NewComponent = () => {
               </DrawerFooter>
             </>
           ) : (
-            <p className=" flex justify-center  items-center h-screen text-red-600 font-bold text-2xl ">
+            <p className="flex justify-center items-center h-screen text-red-600 font-bold text-2xl">
               Please Login first
               <button className="text-xl font-bold bg-gray-800 text-white py-2 px-3 rounded-md mx-2">
-                <Link href={"/userlogin"}> Login </Link>
+                <Link href={"/userlogin"}>Login</Link>
               </button>
             </p>
           )}

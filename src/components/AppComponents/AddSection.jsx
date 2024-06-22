@@ -30,13 +30,6 @@ const AdSection = ({ category }) => {
     fetchAdData();
   }, [category]);
 
-  // if (loading) {
-  //   return (
-  //     <VStack justifyContent="center" alignItems="center" height="100vh">
-  //       <Spinner size="xl" />
-  //     </VStack>
-  //   );
-  // }
 
   return (
     <VStack spacing={6} p={4}>

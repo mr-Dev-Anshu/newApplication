@@ -13,12 +13,14 @@ export const uploadFiles = async (files, id) => {
       uploadTask.then(async (snapshot) => {
         const downloadURL = await getDownloadURL(snapshot.ref);
         fileUrls.push(downloadURL);
+
         try {
-          await addDoc(collection(db, "ads_images"), {
+        const newData =   await addDoc(collection(db, "ads_images"), {
             news_id: id,
             url: downloadURL,
             timestamp: new Date(),
-          });
+          }) ; 
+          console.log("tis isasdfasdf" , newData)
         } catch (error) {
           console.error("Error adding document: ", error);
         }
@@ -26,8 +28,9 @@ export const uploadFiles = async (files, id) => {
     );
   }
   try {
+    console.log("this is  try block !!")
     await Promise.all(uploadPromises);
-    setUrls(fileUrls);
+    console.log(fileUrls) ; 
     console.log("File URLs:", fileUrls);
   } catch (error) {
     console.error("Error uploading files:", error);
@@ -46,7 +49,7 @@ export const uploadImage = async (file) => {
     // Get the download URL
     const url = await getDownloadURL(snapshot.ref);
     console.log("File available at", url);
-    return url ; 
+    return url;
   } catch (error) {
     console.error("Error uploading file:", error);
     throw error;

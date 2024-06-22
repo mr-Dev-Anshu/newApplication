@@ -46,6 +46,7 @@ const page = () => {
 
   const handleFilesChange = (e) => {
     setFiles(e.target.files);
+
   };
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -58,9 +59,7 @@ const page = () => {
       setMessage("Please select the Images ");
       return;
     }
-
     // return
-
     e.preventDefault();
     const imageUrl = await uploadImage(file);
     formData.heading_image = imageUrl;
@@ -69,8 +68,8 @@ const page = () => {
     });
     console.log(docRef.id);
     const id = docRef.id;
-    await uploadFiles(files , id);
-    console.log("Sab thik hai bro :::::) ");
+    const urls = await uploadFiles(files, id);
+    console.log("Sab thik hai bro :::::) ", urls);
     handelToggle();
   };
 
@@ -118,7 +117,7 @@ const page = () => {
             <select
               onChange={handleChange}
               className="border  border-gray-400 text-xl  focus:border focus:border-blue-500 focus:outline-none rounded-md px-4  py-2 w-full"
-              id="category"
+              id="state"
             >
               {statesWithCities?.map((item, index) => (
                 <option value={item.state}>{item.state}</option>
@@ -145,7 +144,6 @@ const page = () => {
               <span>News Category </span>{" "}
               <span className="text-red-600">*</span>
             </p>
-
             <select
               onChange={handleChange}
               className="border  border-gray-400 text-xl  focus:border focus:border-blue-500 focus:outline-none rounded-md px-4  py-2 w-full"
