@@ -1,12 +1,12 @@
 "use client";
 import { useState } from "react";
 import { login } from "@/action";
-import Swal  from "sweetalert2" ; 
+import Swal from "sweetalert2";
 const Page = () => {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  
- const handleLogin = async (e) => {
+
+  const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
     setErrorMessage("");
@@ -23,7 +23,7 @@ const Page = () => {
     const formData = new FormData(e.target);
     const userid = formData.get("userid");
     const password = formData.get("password");
-    Swal.fire
+    Swal.fire;
     if (
       !userid ||
       !password ||
@@ -40,7 +40,6 @@ const Page = () => {
       return;
     }
     try {
-     
       await login(formData);
       Swal.fire({
         title: "Good job!",
@@ -86,6 +85,13 @@ const Page = () => {
         </button>
       </form>
       {errorMessage && <div className="text-red-500 mt-4">{errorMessage}</div>}
+
+      <div>
+        User id is ----- <span className="text-red-600">anshu</span>
+      </div>
+      <div>
+        Password is id is ----- <span className="text-red-600">1</span>
+      </div>
     </div>
   );
 };
