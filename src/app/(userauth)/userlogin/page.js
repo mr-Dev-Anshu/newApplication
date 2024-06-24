@@ -80,7 +80,7 @@ const Page = () => {
           name="password"
         />
         <button
-          className="bg-green-700 py-2 px-4 rounded-md md:w-[70%] w-[90%]"
+          className="bg-green-900  text-gray-300  py-2 px-4 rounded-md md:w-[70%] w-[90%]"
           type="submit"
         >
           {loading ? "Loading..." : "Login"}

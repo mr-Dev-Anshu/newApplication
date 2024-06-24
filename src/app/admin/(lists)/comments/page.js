@@ -9,7 +9,7 @@ const ListComments = () => {
 
   // Function to fetch comments from Firestore
   const fetchComments = async () => {
-    const commentsRef = collection(db, "comments");
+    const commentsRef = collection(db, "Comments");
     const commentsSnapshot = await getDocs(commentsRef);
     let commentsData = [];
 
@@ -25,42 +25,6 @@ const ListComments = () => {
     fetchComments();
   }, []);
 
-  // Dummy comments data
-const dummyComments = [
-    {
-      email: "john.doe@example.com",
-      comments: "This is an interesting article. Thanks for sharing!",
-      newsId: "123456789",
-      status: "Approved"
-    },
-    {
-      email: "jane.smith@example.com",
-      comments: "I have a question about the topic discussed in the article.",
-      newsId: "987654321",
-      status: "Pending"
-    },
-    {
-      email: "sam.wilson@example.com",
-      comments: "Great insights provided in this piece. Well done!",
-      newsId: "456789123",
-      status: "Approved"
-    },
-    {
-      email: "emma.brown@example.com",
-      comments: "Looking forward to more articles like this one!",
-      newsId: "789123456",
-      status: "Approved"
-    },
-    {
-      email: "alex.jones@example.com",
-      comments: "I disagree with some points mentioned. Let's discuss.",
-      newsId: "321654987",
-      status: "Pending"
-    }
-  ];
-  
-  
-
   return (
     <div className="space-y-6">
       <div className="flex justify-between border-b border-gray-400 md:text-3xl text-2xl font-medium border-t py-1">
@@ -71,19 +35,21 @@ const dummyComments = [
           <Tr>
             <Th>Sl No.</Th>
             <Th>Email</Th>
-            <Th>Comments</Th>
+            <Th>Comment</Th>
             <Th>News ID</Th>
-            <Th>Status</Th>
+            <Th>Likes</Th>
+            <Th>Dislikes</Th>
           </Tr>
         </Thead>
         <Tbody>
-          {dummyComments.map((comment, index) => (
+          {comments.map((comment, index) => (
             <Tr key={comment.id}>
               <Td>{index + 1}</Td>
               <Td>{comment.email}</Td>
-              <Td>{comment.comments}</Td>
+              <Td>{comment.comment}</Td>
               <Td>{comment.newsId}</Td>
-              <Td>{comment.status}</Td>
+              <Td>{comment.like}</Td>
+              <Td>{comment.dislike}</Td>
             </Tr>
           ))}
         </Tbody>

@@ -11,63 +11,46 @@ import business from "@/accets/HeaderImage/Business.jpg";
 
 export const navlist = [
   {
-    title: "World News",
-   
-    link: "/world-news",
-    img: world
-  },
-  {
     title: "Politics",
-    
-    link: "/politics",
-    img: political
+
+    link: "#Politics",
+    img: political,
   },
-  {
-    title: "Business",
-    
-    link: "/business",
-    img: business
-  },
+
   {
     title: "Technology",
-    
-    link: "/technology",
-    img: tech
+
+    link: "#Technology",
+    img: tech,
   },
   {
     title: "Health",
-    
-    link: "/health",
-    img: health
+
+    link: "#Health",
+    img: health,
   },
   {
     title: "Science",
-    
-    link: "/science",
-    img: science
+
+    link: "#science",
+    img: science,
   },
   {
     title: "Sports",
-   
-    link: "/sports",
-    img: sports
+
+    link: "#sports",
+    img: sports,
   },
   {
     title: "Entertainment",
-    
-    link: "/entertainment",
-    img: entertainment
+
+    link: "#entertainment",
+    img: entertainment,
   },
   {
     title: "Education",
-    
-    link: "/education",
-    img: education
+
+    link: "#Education",
+    img: education,
   },
-  {
-    title: "Travel",
-    
-    link: "/travel",
-    img: travel
-  }
 ];

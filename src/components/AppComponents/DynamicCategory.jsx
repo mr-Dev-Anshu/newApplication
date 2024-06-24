@@ -14,7 +14,7 @@ const DynamicCategoryContainer = () => {
     const fetchCategories = async () => {
       try {
         const querySnapshot = await getDocs(collection(db, "news_category"));
-         
+
         const fetchedCategories = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           category: doc.data().newsCategory,
@@ -46,7 +46,10 @@ const DynamicCategoryContainer = () => {
 const DynamicCategory = ({ category }) => {
   return (
     <div>
-      <div className="md:w-[50%] px-12 flex border-b border-y-gray-400 py-2 items-center md:text-2xl text-xl font-bold gap-4">
+      <div
+        id={category}
+        className="md:w-[50%] px-12 flex border-b border-y-gray-400 py-2 items-center md:text-2xl text-xl font-bold gap-4"
+      >
         <span className="text-red-500">
           <FaAngleDoubleDown size={25} />
         </span>

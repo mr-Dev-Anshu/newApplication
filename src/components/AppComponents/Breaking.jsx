@@ -18,8 +18,7 @@ const BreakingNews = () => {
   const [newsData, setNewsData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 4;
-
+  const itemsPerPage = 6;
   useEffect(() => {
     const fetchNewsData = async () => {
       setLoading(true);

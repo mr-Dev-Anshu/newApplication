@@ -1,22 +1,45 @@
-'use client'
-import React, { useState } from "react";
-import { Button, Input, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+"use client";
+import { db } from "@/config/firebase.config";
+import { collection, getDocs } from "firebase/firestore";
+import React, { useEffect, useState } from "react";
+import {
+  Button,
+  Input,
+  Table,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+} from "@chakra-ui/react";
 
 const UsersList = () => {
+  const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const dummyUsers = [
-    { id: 1, name: "Abu Motaleb", email: "abumotaleb1111@gmail.com", country: "America", status: "Active" },
-    { id: 2, name: "b", email: "aa@gmail.com", country: "c", status: "Active" },
-    { id: 3, name: "Bokul Khan", email: "bokul@gmail.com", country: "Bangladesh", status: "Active" },
-    { id: 4, name: "Dadu", email: "stationdbug@gmail.com", country: "Bangladesh", status: "Active" },
-    { id: 5, name: "Mridul", email: "dbugsta.store003@gmail.com", country: "Bangladesh", status: "Active" },
-  ];
+  // Function to fetch users from Firestore
+  const fetchUsers = async () => {
+    const usersRef = collection(db, "user");
+    const usersSnapshot = await getDocs(usersRef);
+    let usersData = [];
 
-  const filteredUsers = dummyUsers.filter((user) =>
-    user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.country.toLowerCase().includes(searchTerm.toLowerCase())
+    usersSnapshot.forEach((doc) => {
+      usersData.push({ id: doc.id, ...doc.data() });
+    });
+
+    setUsers(usersData);
+  };
+
+  // Fetch users on component mount
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  const filteredUsers = users.filter(
+    (user) =>
+      // user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchTerm.toLowerCase())
+    // user.country.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -35,10 +58,7 @@ const UsersList = () => {
         <Thead>
           <Tr>
             <Th>S. No.</Th>
-            <Th>Name</Th>
             <Th>Email</Th>
-            <Th>Country</Th>
-            <Th>Status</Th>
             <Th>Action</Th>
           </Tr>
         </Thead>
@@ -46,13 +66,14 @@ const UsersList = () => {
           {filteredUsers.map((user, index) => (
             <Tr key={user.id}>
               <Td>{index + 1}</Td>
-              <Td>{user.name}</Td>
               <Td>{user.email}</Td>
-              <Td>{user.country}</Td>
-              <Td>{user.status}</Td>
               <Td>
-                <Button size="sm" colorScheme="blue">Edit</Button>
-                <Button size="sm" colorScheme="red" ml={2}>Delete</Button>
+                <Button size="sm" colorScheme="blue">
+                  Edit
+                </Button>
+                <Button size="sm" colorScheme="red" ml={2}>
+                  Delete
+                </Button>
               </Td>
             </Tr>
           ))}
